@@ -171,3 +171,129 @@ CREATE TABLE funcionario_servico (
     FOREIGN KEY (fk_servico) REFERENCES servicos (id_servico),
     FOREIGN KEY (fk_ordem_servico) REFERENCES ordensDeServicos (id_ordem_servico)
 );
+
+
+-- ----------------------------------------------------------------------
+--  SELECTS DE TODAS AS TABELAS DO BANCO DE DADOS gro_track
+-- ----------------------------------------------------------------------
+
+-- 1. OFICINAS
+SELECT 
+    id_oficina AS ID,
+    razao_social AS RazaoSocial,
+    cnpj AS CNPJ,
+    dt_criacao AS DataCriacao,
+    status AS Status,
+    email AS Email
+FROM oficinas;
+
+-- 2. ENDERECOS
+SELECT 
+    id_endereco AS ID,
+    cep AS CEP,
+    logradouro AS Logradouro,
+    numero AS Numero,
+    complemento AS Complemento,
+    bairro AS Bairro,
+    cidade AS Cidade,
+    estado AS Estado
+FROM enderecos;
+
+-- 3. CLIENTES
+SELECT 
+    id_cliente AS ID,
+    nome AS Nome,
+    cpf_cnpj AS CPF_CNPJ,
+    telefone AS Telefone,
+    email AS Email,
+    fk_empresa AS Oficina,
+    fk_endereco AS Endereco
+FROM clientes;
+
+-- 4. VEICULOS
+SELECT 
+    id_veiculo AS ID,
+    placa AS Placa,
+    marca AS Marca,
+    modelo AS Modelo,
+    ano_modelo AS AnoModelo,
+    ano_fabricacao AS AnoFabricacao,
+    cor AS Cor,
+    fk_proprietario AS Proprietario
+FROM veiculos;
+
+-- 5. ORDENS DE SERVIÇOS
+SELECT 
+    id_ordem_servico AS ID,
+    dt_entrada_efetiva AS EntradaEfetiva,
+    dt_entrada_agendada AS EntradaAgendada,
+    dt_saida_prevista AS SaidaPrevista,
+    dt_saida_efetiva AS SaidaEfetiva,
+    status AS Status,
+    valor_total AS ValorTotal,
+    seguradora AS Seguradora,
+    pago AS Pago,
+    fk_cliente AS Cliente,
+    fk_veiculo AS Veiculo
+FROM ordensDeServicos;
+
+-- 6. PRODUTOS
+SELECT 
+    id_peca AS ID,
+    nome AS Nome,
+    fornecedor_ref AS FornecedorRef,
+    preco_compra AS PrecoCompra,
+    preco_venda AS PrecoVenda,
+    quantidade_estoque AS QuantidadeEstoque
+FROM produtos;
+
+-- 7. ITENSPRODUTOS
+SELECT 
+    id_itens_produto AS ID,
+    fk_ordem_servico AS OrdemServico,
+    fk_peca AS Peca,
+    quantidade AS Quantidade,
+    desconto AS Desconto,
+    preco_peca AS PrecoPeca
+FROM itensProdutos;
+
+-- 8. SERVIÇOS
+SELECT 
+    id_servico AS ID,
+    tipo_servico AS TipoServico,
+    descricao AS Descricao,
+    tempo_base AS TempoBase,
+    ativo AS Ativo
+FROM servicos;
+
+-- 9. ITENSSERVICOS
+SELECT 
+    id_item_servico AS ID,
+    fk_ordem_servico AS OrdemServico,
+    fk_servico AS Servico,
+    preco_cobrado AS PrecoCobrado,
+    parte_veiculo AS ParteVeiculo,
+    lado_veiculo AS LadoVeiculo,
+    cor AS Cor,
+    especificacao_servico AS Especificacao,
+    observacoes_item AS Observacoes
+FROM itensServicos;
+
+-- 10. FUNCIONARIOS
+SELECT 
+    id_funcionario AS ID,
+    nome AS Nome,
+    cargo AS Cargo,
+    especialidade AS Especialidade,
+    telefone AS Telefone,
+    fk_empresa AS Oficina,
+    senha AS Senha,
+    email AS Email
+FROM funcionarios;
+
+-- 11. FUNCIONARIO_SERVICO
+SELECT 
+    fk_funcionario AS Funcionario,
+    fk_servico AS Servico,
+    fk_ordem_servico AS OrdemServico
+FROM funcionario_servico;
