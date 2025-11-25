@@ -1,13 +1,18 @@
-USE grotrack;
+create database grotrack;
+use grotrack;
+
+-- Tabela: oficinas
 CREATE TABLE oficinas (
   id_oficina INT PRIMARY KEY,
   razao_social VARCHAR(45),
   cnpj CHAR(13),
-  dt_cadastro DATETIME,
+  dt_criacao DATETIME,
   status TINYINT(1),
-  email VARCHAR(45)
+  email VARCHAR(45),
+  senha VARCHAR(255)
 );
 
+-- Tabela: enderecos
 CREATE TABLE enderecos (
   id_endereco INT PRIMARY KEY,
   cep CHAR(9),
@@ -19,6 +24,7 @@ CREATE TABLE enderecos (
   estado VARCHAR(45)
 );
 
+-- Tabela: clientes
 CREATE TABLE clientes (
   id_cliente INT PRIMARY KEY,
   nome VARCHAR(45),
@@ -32,6 +38,7 @@ CREATE TABLE clientes (
   FOREIGN KEY (fk_empresa) REFERENCES oficinas(id_oficina)
 );
 
+-- Tabela: veiculos
 CREATE TABLE veiculos (
   id_veiculo INT PRIMARY KEY,
   placa VARCHAR(10),
@@ -39,27 +46,26 @@ CREATE TABLE veiculos (
   modelo VARCHAR(45),
   ano_modelo INT,
   ano_fabricacao INT,
-  renavam VARCHAR(45),
-  fk_proprietario INT,
-  FOREIGN KEY (fk_proprietario) REFERENCES clientes(id_cliente)
+  prefixo VARCHAR(45),
+  tipoProprietario INT
 );
 
+-- Tabela: registroEntrada
 CREATE TABLE registroEntrada (
   id_registro_entrada INT PRIMARY KEY,
   data_entrada_prevista DATE,
   data_entrada_efetiva DATE,
-  tipo_servico VARCHAR(45),
-  CPF CHAR(11),
-  marca VARCHAR(45),
-  modelo VARCHAR(45),
-  chave_rodas TINYINT,
-  chave_geral TINYINT,
-  km INT,
-  motorista INT,
+  responsavel VARCHAR(11),
+  extintor TINYINT,
+  macaco TINYINT,
+  chave_roda TINYINT,
+  estepe TINYINT,
+  monitor INT,
   fk_veiculo INT,
   FOREIGN KEY (fk_veiculo) REFERENCES veiculos(id_veiculo)
 );
 
+-- Tabela: ordensDeServicos
 CREATE TABLE ordensDeServicos (
   id_ordem_servico INT PRIMARY KEY,
   valor_total DECIMAL(10,2),
@@ -68,11 +74,34 @@ CREATE TABLE ordensDeServicos (
   status VARCHAR(45),
   seguradora TINYINT,
   nf_realizada TINYINT,
-  preco_realizado TINYINT,
+  pgto_realizado TINYINT,
   fk_entrada INT,
   FOREIGN KEY (fk_entrada) REFERENCES registroEntrada(id_registro_entrada)
 );
 
+-- Tabela: funcionarios
+CREATE TABLE funcionarios (
+  id_funcionario INT PRIMARY KEY,
+  nome VARCHAR(45),
+  cargo VARCHAR(45),
+  especialidade VARCHAR(45),
+  telefone VARCHAR(11),
+  fk_empresa INT,
+  email VARCHAR(255),
+  FOREIGN KEY (fk_empresa) REFERENCES oficinas(id_oficina)
+);
+
+-- Tabela: funcionarios_ordem_servico
+CREATE TABLE funcionarios_ordem_servico (
+  fk_funcionario INT,
+  fk_servico INT,
+  fk_ordem_servico INT,
+  FOREIGN KEY (fk_funcionario) REFERENCES funcionarios(id_funcionario),
+  FOREIGN KEY (fk_servico) REFERENCES servicos(id_servico),
+  FOREIGN KEY (fk_ordem_servico) REFERENCES ordensDeServicos(id_ordem_servico)
+);
+
+-- Tabela: servicos
 CREATE TABLE servicos (
   id_servico INT PRIMARY KEY,
   nome VARCHAR(255),
@@ -81,6 +110,7 @@ CREATE TABLE servicos (
   ativo TINYINT
 );
 
+-- Tabela: itensServicos
 CREATE TABLE itensServicos (
   id_servico INT PRIMARY KEY,
   fk_ordem_servico INT,
@@ -95,16 +125,18 @@ CREATE TABLE itensServicos (
   FOREIGN KEY (fk_servico) REFERENCES servicos(id_servico)
 );
 
+-- Tabela: produtos
 CREATE TABLE produtos (
   id_peca INT PRIMARY KEY,
   nome VARCHAR(45),
-  fornecedor_nf VARCHAR(100),
+  fornecedor_id VARCHAR(100),
   preco_compra DECIMAL(10,2),
   preco_venda DECIMAL(10,2),
   quantidade_estoque INT,
   visivel_orcamento TINYINT
 );
 
+-- Tabela: itensProdutos
 CREATE TABLE itensProdutos (
   id_lista_pecas INT PRIMARY KEY,
   fk_ordem_servico INT,
