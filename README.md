@@ -1,21 +1,11 @@
 ## Docker
 
-## Criando imagem do banco de dados
-``` bash 
-docker build -t bd-grotrack 
-```
-
-## Adicionando tag para a imagem
-``` bash 
-docker tag bd-grotrack:latest erickym/bd-grotrack:latest 
-```
-
-## Subindo a imagem no docker hub
-``` bash 
-docker push erickym/bd-grotrack:latest 
-```
-
 ## Pegar a imagem no docker hub
 ``` bash 
-docker pull erickym/bd-grotrack:latest
+docker pull henriquedandrade/bd-grotrack-v2:bd
+```
+
+## Comando para rodar o container
+``` bash 
+docker run -d   --name grotrack   -e MYSQL_ROOT_PASSWORD=123456   -e MYSQL_DATABASE=grotrack   -p 3306:3306   -v mysql-data:/var/lib/mysql   henriquedandrade/bd-grotrack-v2:bd
 ```
