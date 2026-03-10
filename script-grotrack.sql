@@ -7,7 +7,7 @@ CREATE TABLE oficinas (
     id_oficina INT NOT NULL AUTO_INCREMENT,
     razao_social VARCHAR(45) NOT NULL,
     cnpj CHAR(14),
-    dt_criacao DATETIME NOT NULL,
+    data_criacao DATETIME NOT NULL,
     status TINYINT(1) DEFAULT 1,
     email VARCHAR(45),
     PRIMARY KEY (id_oficina)
@@ -86,8 +86,8 @@ CREATE TABLE registro_entrada (
 CREATE TABLE ordem_de_servicos (
     id_ordem_servico INT NOT NULL AUTO_INCREMENT,
     valor_total DECIMAL(10,2),
-    dt_saida_prevista DATE,
-    dt_saida_efetiva DATE,
+    data_saida_prevista DATE,
+    data_saida_efetiva DATE,
     status VARCHAR(45),
     seguradora TINYINT(1) DEFAULT 0,
     nf_realizada TINYINT(1) DEFAULT 0,
@@ -118,30 +118,30 @@ CREATE TABLE produtos (
     PRIMARY KEY (id_produto)
 );
 
+CREATE TABLE itens_servicos (
+	id_registro_servico INT AUTO_INCREMENT,
+    fk_ordem_servico INT NOT NULL,
+    preco_cobrado DECIMAL(10,4),
+    parte_veiculo VARCHAR(45),
+    lado_veiculo VARCHAR(45),
+	tipo_servico varchar(45),
+    cor VARCHAR(45),
+    especificacao_servico VARCHAR(100),
+    observacoes_item VARCHAR(45),
+    PRIMARY KEY (id_registro_servico, fk_ordem_servico),
+    FOREIGN KEY (fk_ordem_servico) REFERENCES ordem_de_servicos (id_ordem_servico)
+);
+
 CREATE TABLE funcionarios_servico (
     fk_funcionario INT NOT NULL,
     fk_servico INT NOT NULL,
     fk_ordem_servico INT NOT NULL,
     PRIMARY KEY (fk_funcionario, fk_servico, fk_ordem_servico),
     FOREIGN KEY (fk_funcionario) REFERENCES funcionarios (id_funcionario),
-    FOREIGN KEY (fk_servico) REFERENCES servicos (id_servico),
+    FOREIGN KEY (fk_servico) REFERENCES itens_servicos (id_registro_servico),
     FOREIGN KEY (fk_ordem_servico) REFERENCES ordem_de_servicos (id_ordem_servico)
 );
 
-CREATE TABLE itens_servicos (
-	id_registro_servico INT AUTO_INCREMENT,
-    fk_ordem_servico INT NOT NULL,
-    fk_servico INT NOT NULL,
-    preco_cobrado DECIMAL(10,4),
-    parte_veiculo VARCHAR(45),
-    lado_veiculo VARCHAR(45),
-    cor VARCHAR(45),
-    especificacao_servico VARCHAR(100),
-    observacoes_item VARCHAR(45),
-    PRIMARY KEY (id_registro_servico, fk_ordem_servico, fk_servico),
-    FOREIGN KEY (fk_ordem_servico) REFERENCES ordem_de_servicos (id_ordem_servico),
-    FOREIGN KEY (fk_servico) REFERENCES servicos (id_servico)
-);
 
 CREATE TABLE itens_produtos (
 	id_registro_peca INT AUTO_INCREMENT,
@@ -172,7 +172,7 @@ INSERT INTO `oficinas` VALUES (1,'GRO Track','14820390000150','2026-01-16 16:27:
 INSERT INTO `clientes` VALUES (1,'Ana Paula Martins','12345678909','11987654321','ana.martins@example.com','PESSOA_FISICA',1,1),(2,'Bruno Henrique Souza','98765432100','11991234567','bruno.souza@example.com','PESSOA_FISICA',2,1);
 
 -- ========================================
--- Table: veiculos (depends on: clientes)
+-- Table: veifculos (depends on: clientes)
 -- ========================================
 INSERT INTO `veiculos` VALUES (1,'FRO1C23','Apache Vip V',2024,2024,'A',1),(2,'TUR7E89','Paradiso G8 1800 DD',2022,2022,'B',2);
 
@@ -204,7 +204,9 @@ INSERT INTO `produtos` VALUES (1,'Filtro de óleo','NF-987654',120.5,180,45,1),(
 -- ========================================
 -- Table: itens_servicos (depends on: ordem_de_servicos, servicos)
 -- ========================================
-INSERT INTO `itens_servicos` VALUES (1,1,3,350,'PARACHOQUE','DIANTEIRO','Vermelho','Reparo no parachoque dianteiro após colisão leve','Necessário retoque de pintura'),(2,1,4,420,'SAIA','DIREITO','Vermelho','Repintura completa da lateral direita devido a riscos','Usar tinta metálica original');
+INSERT INTO `itens_servicos`(fk_ordem_servico, preco_cobrado, parte_veiculo, lado_veiculo, tipo_servico, cor, especificacao_servico, observacoes_item) VALUES 
+(1,350,'PARACHOQUE','DIANTEIRO','FUNILARIA','Vermelho','Reparo no parachoque dianteiro após colisão leve','Necessário retoque de pintura'),
+(1,420,'SAIA','DIREITO','FUNILARIA','Vermelho','Repintura completa da lateral direita devido a riscos','Usar tinta metálica original');
 
 -- ========================================
 -- Table: itens_produtos (depends on: ordem_de_servicos, produtos)
@@ -263,3 +265,30 @@ JOIN oficinas as ofic
 ON c.fk_oficina = ofic.id_oficina
 WHERE os.pagt_realizado = 1 AND os.status = 'FINALIZADO'
 GROUP BY id_ordem_servico;
+
+-- usuário administrador com acesso remoto (todas as tabelas)
+CREATE USER IF NOT EXISTS 'admin'@'%' IDENTIFIED BY 'sua_senha_segura';
+GRANT ALL PRIVILEGES ON grotrack.* TO 'admin'@'%';
+FLUSH PRIVILEGES;
+
+
+CREATE TABLE IF NOT EXISTS arquivos (
+  id_arquivo INT NOT NULL auto_increment,
+  nome VARCHAR(255) NOT NULL,
+  formato VARCHAR(45) NOT NULL,
+  template VARCHAR(45) NOT NULL,
+  url VARCHAR(255) NOT NULL,
+  data_criacao DATETIME NOT NULL,
+  data_atualizacao DATETIME NOT NULL,
+  fk_ordem_servico INT NOT NULL,
+  PRIMARY KEY (id_arquivo)
+);
+
+CREATE TABLE IF NOT EXISTS metadados (
+  id_metadado INT NOT NULL auto_increment,
+  chave VARCHAR(255) NULL,
+  valor VARCHAR(255) NULL,
+  fk_arquivo INT NOT NULL,
+  PRIMARY KEY (id_metadado),
+  FOREIGN KEY (fk_arquivo) REFERENCES arquivos(id_arquivo)
+);
