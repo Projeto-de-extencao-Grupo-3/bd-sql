@@ -274,12 +274,13 @@ FLUSH PRIVILEGES;
 
 CREATE TABLE IF NOT EXISTS arquivos (
   id_arquivo INT NOT NULL auto_increment,
-  nome VARCHAR(255) NOT NULL,
-  formato VARCHAR(45) NOT NULL,
+  nome VARCHAR(255) NULL,
+  formato VARCHAR(45) NULL,
   template VARCHAR(45) NOT NULL,
-  url VARCHAR(255) NOT NULL,
-  data_criacao DATETIME NOT NULL,
-  data_atualizacao DATETIME NOT NULL,
+  status VARCHAR(45) NOT NULL,
+  url VARCHAR(255) NULL,
+  data_criacao DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  data_atualizacao DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   fk_ordem_servico INT NOT NULL,
   PRIMARY KEY (id_arquivo)
 );

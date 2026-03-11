@@ -22,4 +22,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: gabrielpacificooo/grotrack:database
+        tags: gabrielpacificooo/grotrack:${{ secrets.DOCKERHUB_IMAGE_TAG}}
