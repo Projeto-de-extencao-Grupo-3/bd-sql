@@ -1,7 +1,6 @@
 DROP DATABASE IF EXISTS grotrack;
-CREATE DATABASE IF NOT EXISTS grotrack;
+CREATE DATABASE IF NOT EXISTS grotrack CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE grotrack;
-
 
 CREATE TABLE oficinas (
     id_oficina INT NOT NULL AUTO_INCREMENT,
