@@ -105,6 +105,7 @@ CREATE TABLE produtos (
     preco_venda DECIMAL(10,2),
     quantidade_estoque INT,
     viavel_orcamento TINYINT(1) DEFAULT 1,
+    tipo_servico VARCHAR(45),
     PRIMARY KEY (id_produto)
 );
 
@@ -137,13 +138,13 @@ CREATE TABLE itens_produtos (
 	id_registro_peca INT AUTO_INCREMENT,
     fk_lista_pecas INT NOT NULL,
     fk_ordem_servico INT NOT NULL,
-    fk_peca INT NOT NULL,
+    fk_produto INT NOT NULL,
     quantidade INT,
     preco_peca DECIMAL(10,2),
     baixado TINYINT(1) DEFAULT 0,
-    PRIMARY KEY (id_registro_peca, fk_lista_pecas, fk_ordem_servico, fk_peca),
+    PRIMARY KEY (id_registro_peca, fk_lista_pecas, fk_ordem_servico, fk_produto),
     FOREIGN KEY (fk_ordem_servico) REFERENCES ordem_de_servicos (id_ordem_servico),
-    FOREIGN KEY (fk_peca) REFERENCES produtos (id_produto)
+    FOREIGN KEY (fk_produto) REFERENCES produtos (id_produto)
 );
 
 -- ========================================
@@ -184,7 +185,12 @@ INSERT INTO `ordem_de_servicos` VALUES (1,1850,'2025-10-28',NULL,'EM_PRODUCAO',0
 -- ========================================
 -- Table: produtos (no dependencies)
 -- ========================================
-INSERT INTO `produtos` VALUES (1,'Filtro de óleo','NF-987654',120.5,180,45,1),(2,'Pastilha de freio','NF-123456',90,150,60,1),(3,'Bateria 150Ah','NF-555222',400,650,20,1),(4,'Amortecedor traseiro','NF-998877',250,390,30,1),(5,'Correia dentada','NF-441122',70,120,50,1);
+INSERT INTO `produtos` VALUES 
+    (1,'Filtro de óleo','NF-987654',120.5,180,45,1, "MECANICA"),
+    (2,'Pastilha de freio','NF-123456',90,150,60,1, "MECANICA"),
+    (3,'Bateria 150Ah','NF-555222',400,650,20,1, "MECANICA"),
+    (4,'Amortecedor traseiro','NF-998877',250,390,30,1, "MECANICA"),
+    (5,'Correia dentada','NF-441122',70,120,50,1, "MECANICA");
 
 -- ========================================
 -- Table: itens_servicos (depends on: ordem_de_servicos, servicos)
