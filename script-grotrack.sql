@@ -104,7 +104,7 @@ CREATE TABLE produtos (
     preco_compra DECIMAL(10,2),
     preco_venda DECIMAL(10,2),
     quantidade_estoque INT,
-    viavel_orcamento TINYINT(1) DEFAULT 1,
+    visivel_orcamento TINYINT(1) DEFAULT 1,
     tipo_servico VARCHAR(45),
     PRIMARY KEY (id_produto)
 );
