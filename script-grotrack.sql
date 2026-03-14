@@ -97,15 +97,6 @@ CREATE TABLE ordem_de_servicos (
     FOREIGN KEY (fk_entrada) REFERENCES registro_entrada (id_registro_entrada)
 );
 
-CREATE TABLE servicos (
-    id_servico INT NOT NULL AUTO_INCREMENT,
-    nome VARCHAR(45) NOT NULL,
-    tipo_servico VARCHAR(45),
-    tempo_base INT,
-    ativo TINYINT(1) DEFAULT 1,
-    PRIMARY KEY (id_servico)
-);
-
 CREATE TABLE produtos (
     id_produto INT NOT NULL AUTO_INCREMENT,
     nome VARCHAR(45) NOT NULL,
@@ -189,11 +180,6 @@ INSERT INTO `registro_entrada` VALUES (1,'2025-10-25','2025-10-25','Carlos Souza
 -- Table: ordem_de_servicos (depends on: registro_entrada)
 -- ========================================
 INSERT INTO `ordem_de_servicos` VALUES (1,1850,'2025-10-28',NULL,'EM_PRODUCAO',0,0,0,1,1),(2,4500,'2025-10-27','2025-10-27','FINALIZADO',1,1,1,2,1);
-
--- ========================================
--- Table: servicos (no dependencies)
--- ========================================
-INSERT INTO `servicos` VALUES (1,'Troca de óleo e filtro','MECÂNICA',60,1),(2,'Revisão do sistema de freios','MECÂNICA',120,1),(3,'Reparo em parachoque dianteiro','FUNILARIA',180,1),(4,'Repintura completa da lateral direita','PINTURA',240,1);
 
 -- ========================================
 -- Table: produtos (no dependencies)
